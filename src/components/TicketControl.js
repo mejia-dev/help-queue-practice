@@ -19,16 +19,14 @@ function TicketControl() {
 
   const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
   const [mainTicketList, setMainTicketList] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [editing, setEditing] = useState(false);
 
   const handleClick = () => {
-    if (this.state.selectedTicket != null) {
-      setFormVisibleOnPage(false);  
-      this.setState({
-        formVisibleOnPage: false,
-        selectedTicket: null,
-        // editing: false
-        // potentially the wrong state value was removed in lesson https://full-time.learnhowtoprogram.com/react/react-with-nosql/refactoring-help-queue-to-use-hooks
-      });
+    if (selectedTicket != null) {
+      setFormVisibleOnPage(false);
+      setSelectedTicket(null);
+      setEditing(false);
     } else {
       setFormVisibleOnPage(!formVisibleOnPage);
     }
@@ -37,26 +35,20 @@ function TicketControl() {
   const handleDeletingTicket = (id) => {
     const newMainTicketList = mainTicketList.filter(ticket => ticket.id !== id);
     setMainTicketList(newMainTicketList);
-    // this.setState({
-    //   mainTicketList: newMainTicketList,
-    //   selectedTicket: null
-    // });
+    setSelectedTicket(null);
   }
 
   const handleEditClick = () => {
-    this.setState({editing: true});
+    setEditing(true);
   }
 
   const handleEditingTicketInList = (ticketToEdit) => {
     const editedMainTicketList = mainTicketList
-      .filter(ticket => ticket.id !== this.state.selectedTicket.id)
+      .filter(ticket => ticket.id !== selectedTicket.id)
       .concat(ticketToEdit);
     setMainTicketList(editedMainTicketList);
-    // this.setState({
-    //     mainTicketList: editedMainTicketList,
-    //     editing: false,
-    //     selectedTicket: null
-    //   });
+    setEditing(false);
+    setSelectedTicket(null);
   }
 
   const handleAddingNewTicketToList = (newTicket) => {
@@ -66,37 +58,36 @@ function TicketControl() {
   }
 
   const handleChangingSelectedTicket = (id) => {
-    const selectedTicket = this.state.mainTicketList.filter(ticket => ticket.id === id)[0];
-    this.setState({selectedTicket: selectedTicket});
-    setFormVisibleOnPage(false)
+    const selection = mainTicketList.filter(ticket => ticket.id === id)[0];
+    setSelectedTicket(selection);
   }
 
   let currentlyVisibleState = null;
   let buttonText = null;
 
 
-  if (this.state.editing ) {      
-    currentlyVisibleState = <EditTicketForm 
-      ticket = {this.state.selectedTicket} 
-      onEditTicket = {this.handleEditingTicketInList}
-      />
+  if (editing) {
+    currentlyVisibleState = 
+      <EditTicketForm 
+        ticket = {selectedTicket} 
+        onEditTicket = {this.handleEditingTicketInList} />
     buttonText = "Return to Ticket List";
-  } else if (this.state.selectedTicket != null) {
-    currentlyVisibleState = <TicketDetail 
-      ticket = {this.state.selectedTicket} 
-      onClickingDelete = {this.handleDeletingTicket} 
-      onClickingEdit = {this.handleEditClick} 
-      />
+  } else if (selectedTicket != null) {
+    currentlyVisibleState = 
+      <TicketDetail 
+        ticket={selectedTicket} 
+        onClickingDelete={this.handleDeletingTicket}
+        onClickingEdit = {this.handleEditClick} />
     buttonText = "Return to Ticket List";
   } else if (formVisibleOnPage) {
     currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList} />
     buttonText = "Return to Ticket List";
   } else {
-    currentlyVisibleState = 
-      <TicketList 
-        onTicketSelection={this.handleChangingSelectedTicket} 
+    currentlyVisibleState =
+      <TicketList
+        onTicketSelection={this.handleChangingSelectedTicket}
         ticketList={mainTicketList} />;
-    buttonText = "Add Ticket"; 
+    buttonText = "Add Ticket";
   }
 
   return (
