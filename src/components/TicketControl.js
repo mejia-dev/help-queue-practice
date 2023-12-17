@@ -3,6 +3,7 @@ import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import TicketDetail from './TicketDetail';
 import EditTicketForm from './EditTicketForm';
+import React, { useState } from 'react';
 
 function TicketControl() {
 
@@ -16,17 +17,19 @@ function TicketControl() {
   //   };
   // }
 
+  const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
+
   const handleClick = () => {
     if (this.state.selectedTicket != null) {
+      setFormVisibleOnPage(false);  
       this.setState({
         formVisibleOnPage: false,
         selectedTicket: null,
-        editing: false
+        // editing: false
+        // potentially the wrong state value was removed in lesson https://full-time.learnhowtoprogram.com/react/react-with-nosql/refactoring-help-queue-to-use-hooks
       });
     } else {
-      this.setState(prevState => ({
-        formVisibleOnPage: !prevState.formVisibleOnPage,
-      }));
+      setFormVisibleOnPage(!formVisibleOnPage);
     }
   }
 
@@ -55,12 +58,13 @@ function TicketControl() {
 
   const handleAddingNewTicketToList = (newTicket) => {
     const newMainTicketList = this.state.mainTicketList.concat(newTicket);
-    this.setState({ mainTicketList: newMainTicketList, formVisibleOnPage: false });
+    this.setState({ mainTicketList: newMainTicketList });
   }
 
   const handleChangingSelectedTicket = (id) => {
     const selectedTicket = this.state.mainTicketList.filter(ticket => ticket.id === id)[0];
     this.setState({selectedTicket: selectedTicket});
+    setFormVisibleOnPage(false)
   }
 
   let currentlyVisibleState = null;
@@ -80,7 +84,7 @@ function TicketControl() {
       onClickingEdit = {this.handleEditClick} 
       />
     buttonText = "Return to Ticket List";
-  } else if (this.state.formVisibleOnPage) {
+  } else if (formVisibleOnPage) {
     currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList} />
     buttonText = "Return to Ticket List";
   } else {
