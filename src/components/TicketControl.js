@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import TicketDetail from './TicketDetail';
 import EditTicketForm from './EditTicketForm';
-import React, { useState } from 'react';
 
 function TicketControl() {
 
