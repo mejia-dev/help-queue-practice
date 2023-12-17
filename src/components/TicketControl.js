@@ -7,16 +7,6 @@ import React, { useState } from 'react';
 
 function TicketControl() {
 
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     formVisibleOnPage: false,
-  //     mainTicketList: [],
-  //     selectedTicket: null,
-  //     editing: false
-  //   };
-  // }
-
   const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
   const [mainTicketList, setMainTicketList] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -66,34 +56,36 @@ function TicketControl() {
   let buttonText = null;
 
 
-  if (editing) {
+  if (editing) {      
     currentlyVisibleState = 
       <EditTicketForm 
         ticket = {selectedTicket} 
-        onEditTicket = {this.handleEditingTicketInList} />
+        onEditTicket = {handleEditingTicketInList} />;
     buttonText = "Return to Ticket List";
   } else if (selectedTicket != null) {
     currentlyVisibleState = 
       <TicketDetail 
         ticket={selectedTicket} 
-        onClickingDelete={this.handleDeletingTicket}
-        onClickingEdit = {this.handleEditClick} />
+        onClickingDelete={handleDeletingTicket}
+        onClickingEdit = {handleEditClick} />;
     buttonText = "Return to Ticket List";
   } else if (formVisibleOnPage) {
-    currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList} />
-    buttonText = "Return to Ticket List";
+    currentlyVisibleState = 
+      <NewTicketForm 
+        onNewTicketCreation={handleAddingNewTicketToList}/>;
+    buttonText = "Return to Ticket List"; 
   } else {
-    currentlyVisibleState =
-      <TicketList
-        onTicketSelection={this.handleChangingSelectedTicket}
+    currentlyVisibleState = 
+      <TicketList 
+        onTicketSelection={handleChangingSelectedTicket} 
         ticketList={mainTicketList} />;
-    buttonText = "Add Ticket";
+    buttonText = "Add Ticket"; 
   }
 
   return (
     <React.Fragment>
       {currentlyVisibleState}
-      <button onClick={this.handleClick}>{buttonText}</button>
+      <button onClick={handleClick}>{buttonText}</button>
     </React.Fragment>
   );
 
